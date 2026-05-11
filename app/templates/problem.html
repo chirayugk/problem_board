@@ -36,11 +36,41 @@
 
         </p>
 
-        <span class="badge bg-primary">
+        <div class="d-flex justify-content-between align-items-center mt-4">
 
-            {{ problem.tag }}
+            <div>
 
-        </span>
+                <span class="badge bg-primary">
+
+                    {{ problem.tag }}
+
+                </span>
+
+                <small class="text-muted ms-3">
+
+                    Posted: {{ problem.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+
+                </small>
+
+            </div>
+
+            <form
+                action="/upvote/{{ problem.id }}"
+                method="post"
+                style="display: inline;"
+            >
+
+                <button
+                    class="btn btn-outline-primary btn-sm"
+                >
+
+                    ▲ {{ problem.upvotes }} Upvotes
+
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
 
@@ -71,21 +101,47 @@
 
     </div>
 
-    <h3 class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        Replies
+        <h3>
 
-    </h3>
+            Replies ({{ problem.replies|length }})
 
-    {% for reply in problem.replies %}
-
-    <div class="card p-3 mb-3">
-
-        {{ reply.content }}
+        </h3>
 
     </div>
 
-    {% endfor %}
+    {% if problem.replies %}
+
+        {% for reply in problem.replies %}
+
+        <div class="card p-4 mb-3">
+
+            <p>
+
+                {{ reply.content }}
+
+            </p>
+
+            <small class="text-muted">
+
+                Replied: {{ reply.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+
+            </small>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+
+            No replies yet. Be the first to reply!
+
+        </div>
+
+    {% endif %}
 
 </div>
 
