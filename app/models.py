@@ -4,7 +4,8 @@ from sqlalchemy import (
     String,
     Text,
     DateTime,
-    ForeignKey
+    ForeignKey,
+    Boolean
 )
 
 from sqlalchemy.orm import relationship
@@ -20,22 +21,32 @@ class Problem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=False, index=True)
 
     description = Column(Text, nullable=False)
 
     created_at = Column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        index=True
     )
 
-    upvotes = Column(Integer, default=0)
+    upvotes = Column(Integer, default=0, index=True)
 
-    tag = Column(String, nullable=True)
+    tag = Column(String, nullable=True, index=True)
+
+    status = Column(String, default="open")
+
+    view_count = Column(Integer, default=0)
+
+    is_pinned = Column(Boolean, default=False)
+
+    is_flagged = Column(Boolean, default=False)
 
     replies = relationship(
         "Reply",
-        back_populates="problem"
+        back_populates="problem",
+        cascade="all, delete-orphan"
     )
 
 
@@ -49,12 +60,16 @@ class Reply(Base):
 
     created_at = Column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        index=True
     )
+
+    helpful_votes = Column(Integer, default=0)
 
     problem_id = Column(
         Integer,
-        ForeignKey("problems.id")
+        ForeignKey("problems.id"),
+        index=True
     )
 
     problem = relationship(
