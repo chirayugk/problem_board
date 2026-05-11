@@ -43,6 +43,35 @@
 
     </div>
 
+    <div class="mb-4">
+
+        <div class="btn-group" role="group">
+
+            <a
+                href="/?sort=newest"
+                class="btn {% if current_sort == 'newest' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+            >
+                📅 Newest
+            </a>
+
+            <a
+                href="/?sort=upvotes"
+                class="btn {% if current_sort == 'upvotes' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+            >
+                👍 Most Upvoted
+            </a>
+
+            <a
+                href="/?sort=replies"
+                class="btn {% if current_sort == 'replies' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+            >
+                💬 Most Replied
+            </a>
+
+        </div>
+
+    </div>
+
     <div class="card p-4 mb-5">
 
         <form action="/add-problem" method="post">
@@ -132,6 +161,12 @@
             method="post"
             style="display: inline;"
         >
+
+            <input
+                type="hidden"
+                name="sort"
+                value="{{ current_sort }}"
+            >
 
             <button
                 class="btn btn-outline-primary btn-sm"

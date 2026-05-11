@@ -54,18 +54,35 @@ def get_db():
 @app.get("/")
 def home(
     request: Request,
+    sort: str = "newest",
     db: Session = Depends(get_db)
 ):
 
-    problems = db.query(Problem).order_by(
-        Problem.id.desc()
-    ).all()
+    query = db.query(Problem)
+
+    if sort == "upvotes":
+        problems = query.order_by(
+            Problem.upvotes.desc()
+        ).all()
+
+    elif sort == "replies":
+        problems = sorted(
+            query.all(),
+            key=lambda p: len(p.replies),
+            reverse=True
+        )
+
+    else:
+        problems = query.order_by(
+            Problem.id.desc()
+        ).all()
 
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={
-            "problems": problems
+            "problems": problems,
+            "current_sort": sort
         }
     )
 
@@ -151,6 +168,8 @@ def upvote_problem(
 
     problem_id: int,
 
+    sort: str = "newest",
+
     db: Session = Depends(get_db)
 ):
 
@@ -163,6 +182,6 @@ def upvote_problem(
     db.commit()
 
     return RedirectResponse(
-        "/",
+        f"/?sort={sort}",
         status_code=303
     )
